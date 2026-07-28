@@ -1,13 +1,23 @@
-# Your Project
+# Favicon Generator
 
-Template sample home page for technical documentation.
+Generate a modern favicon set from one source image (PNG, JPEG, WebP, or SVG).
 
-Replace this content with an overview of your project: what it is, who it is
-for, and where to go next.
+The PyPI package is **`lupaxa-favicon-generator`**. The console command is
+**`favicon-generator`**.
+
+## What you get
+
+- `favicon-16x16.png`, `favicon-32x32.png`
+- `favicon.ico` (16, 32, 48)
+- `apple-touch-icon.png` (180×180)
+- `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`
+- `site.webmanifest`
+- `favicon-links.html` (optional HTML snippet)
+- `favicon.svg` when the source is SVG
 
 ## Next steps
 
 - [Getting started](getting-started.md) — install and first run
 - [Usage](usage.md) — common workflows
 - [Reference](reference.md) — commands and options
-- [Examples](examples.md) — Markdown / Material patterns used in this template
+- [Examples](examples.md) — copy-paste recipes

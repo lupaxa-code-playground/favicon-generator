@@ -1,25 +1,29 @@
 # Getting started
 
-Template sample page. Replace with your install and first-run instructions.
-
 ## Requirements
 
-- List runtime requirements here
-- List optional tooling here
+- Python 3.10+
+- For SVG sources: system Cairo (`brew install cairo` on macOS, or
+  `apt install libcairo2` on Debian/Ubuntu)
 
 ## Install
 
 ```bash
-# Example — replace with your real install commands
-pip install your-project
-# or
-brew install your-project
+python -m pip install lupaxa-favicon-generator
+```
+
+Editable / development install:
+
+```bash
+python -m pip install -e ".[dev]"
 ```
 
 ## First run
 
 ```bash
-your-project --help
+favicon-generator --help
+favicon-generator logo.png
 ```
 
-You should see usage help printed to the terminal.
+By default, files are written to `./favicons`. Use `--overwrite` if that
+directory already contains generated files you want replaced.

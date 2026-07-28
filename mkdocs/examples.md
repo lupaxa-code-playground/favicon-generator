@@ -1,65 +1,33 @@
 # Examples
 
-Template showcase of Material / Python-Markdown features. Keep or delete this
-page after you start real project docs.
+## Minimal PNG
 
-## Admonitions
-
-!!! note "Note"
-    Useful for tip-style callouts.
-
-!!! warning "Warning"
-    Call out risk or irreversible actions.
-
-!!! failure "Failure"
-    Describe error cases and recovery.
-
-!!! tip "Tip"
-    Optional shortcuts or recommended defaults.
-
-## Tabs
-
-=== "macOS"
-
-    ```bash
-    brew install your-project
-    ```
-
-=== "Linux"
-
-    ```bash
-    sudo apt install your-project
-    ```
-
-=== "Python"
-
-    ```bash
-    pip install your-project
-    ```
-
-## Code
-
-```python
-def greet(name: str) -> str:
-    return f"Hello, {name}!"
-
-
-print(greet("Your Project"))
+```bash
+favicon-generator logo.png
 ```
 
-Inline code and keys: press ++ctrl+c++ to cancel, or run `your-project --help`.
+## SVG with site paths
 
-## Tables
+```bash
+favicon-generator logo.svg \
+  --output-dir site/assets/favicons \
+  --prefix /assets/favicons/ \
+  --name "My App" \
+  --short-name "App" \
+  --theme-colour "#0A0A0A" \
+  --background-colour "#0A0A0A" \
+  --background "#0A0A0A" \
+  --padding 0.05
+```
 
-| Field | Type | Required |
-| --- | --- | --- |
-| `name` | string | yes |
-| `enabled` | boolean | no |
-| `retries` | integer | no |
+## Overwrite an existing output directory
 
-## Task lists
+```bash
+favicon-generator logo.png --output-dir favicons --overwrite
+```
 
-- [x] Clone the template
-- [x] Install requirements and run `mkdocs serve`
-- [ ] Replace placeholders in `mkdocs.yml`
-- [ ] Rewrite sample pages for your project
+## Skip ICO and HTML
+
+```bash
+favicon-generator logo.png --no-ico --no-html
+```
