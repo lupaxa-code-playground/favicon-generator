@@ -25,7 +25,7 @@ def test_build_html_includes_core_tags() -> None:
     assert 'rel="icon" href="icons/favicon.svg"' in html
     assert 'href="icons/favicon.ico"' in html
     assert 'sizes="32x32"' in html
-    assert 'apple-touch-icon' in html
+    assert "apple-touch-icon" in html
     assert 'href="icons/site.webmanifest"' in html
     assert 'content="#112233"' in html
 

@@ -110,9 +110,7 @@ def _rgba_png_bytes(size: int = 32) -> bytes:
     return buf.getvalue()
 
 
-def test_load_svg_with_patched_cairosvg(
-    svg_source: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_load_svg_with_patched_cairosvg(svg_source: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     fake_mod = types.ModuleType("cairosvg")
     fake_mod.svg2png = MagicMock(return_value=_rgba_png_bytes(128))
     monkeypatch.setitem(sys.modules, "cairosvg", fake_mod)
@@ -125,9 +123,7 @@ def test_load_svg_with_patched_cairosvg(
     assert called_url == svg_source.resolve().as_uri()
 
 
-def test_load_svg_import_error(
-    svg_source: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_load_svg_import_error(svg_source: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setitem(sys.modules, "cairosvg", None)
 
     with pytest.raises(ValueError, match="cairosvg") as excinfo:
@@ -136,9 +132,7 @@ def test_load_svg_import_error(
     assert str(excinfo.value) == CAIRO_DEPENDENCY_ERROR
 
 
-def test_prepare_source_svg_mocked(
-    svg_source: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_prepare_source_svg_mocked(svg_source: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     fake_mod = types.ModuleType("cairosvg")
     fake_mod.svg2png = MagicMock(return_value=_rgba_png_bytes())
     monkeypatch.setitem(sys.modules, "cairosvg", fake_mod)
@@ -149,9 +143,7 @@ def test_prepare_source_svg_mocked(
     assert image.mode == "RGBA"
 
 
-def test_load_svg_oserror_on_svg2png(
-    svg_source: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_load_svg_oserror_on_svg2png(svg_source: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     fake_mod = types.ModuleType("cairosvg")
     fake_mod.svg2png = MagicMock(side_effect=OSError("libcairo missing"))
     monkeypatch.setitem(sys.modules, "cairosvg", fake_mod)
@@ -162,9 +154,7 @@ def test_load_svg_oserror_on_svg2png(
     assert str(excinfo.value) == CAIRO_DEPENDENCY_ERROR
 
 
-def test_load_svg_empty_png_bytes(
-    svg_source: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_load_svg_empty_png_bytes(svg_source: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     fake_mod = types.ModuleType("cairosvg")
     fake_mod.svg2png = MagicMock(return_value=b"")
     monkeypatch.setitem(sys.modules, "cairosvg", fake_mod)

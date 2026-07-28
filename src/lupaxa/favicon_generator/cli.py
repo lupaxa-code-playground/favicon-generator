@@ -129,13 +129,9 @@ def main() -> int:
         background = normalise_colour(args.background)
         theme_colour = validate_hex_colour(args.theme_colour, "--theme-colour")
         background_colour_raw = (
-            args.background_colour
-            if args.background_colour is not None
-            else args.theme_colour
+            args.background_colour if args.background_colour is not None else args.theme_colour
         )
-        background_colour = validate_hex_colour(
-            background_colour_raw, "--background-colour"
-        )
+        background_colour = validate_hex_colour(background_colour_raw, "--background-colour")
 
         source, source_is_svg = prepare_source(args.source)
 
@@ -166,9 +162,7 @@ def main() -> int:
             )
 
         if source_is_svg:
-            generated.append(
-                copy_favicon_svg(args.source, args.output_dir, args.overwrite)
-            )
+            generated.append(copy_favicon_svg(args.source, args.output_dir, args.overwrite))
 
         if not args.no_manifest:
             generated.append(

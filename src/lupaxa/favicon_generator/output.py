@@ -24,37 +24,31 @@ def build_html(
 
     if include_svg:
         lines.append(
-            f'<link rel="icon" href="{url_for(prefix, "favicon.svg")}" '
-             'type="image/svg+xml" />'
+            f'<link rel="icon" href="{url_for(prefix, "favicon.svg")}" type="image/svg+xml" />'
         )
 
     if include_ico:
-        lines.append(
-            f'<link rel="icon" href="{url_for(prefix, "favicon.ico")}" '
-             'sizes="48x48" />'
-        )
+        lines.append(f'<link rel="icon" href="{url_for(prefix, "favicon.ico")}" sizes="48x48" />')
 
     lines.extend(
         (
             (
                 '<link rel="icon" type="image/png" sizes="32x32" '
-                 f'href="{url_for(prefix, "favicon-32x32.png")}" />'
+                f'href="{url_for(prefix, "favicon-32x32.png")}" />'
             ),
             (
                 '<link rel="icon" type="image/png" sizes="16x16" '
-                 f'href="{url_for(prefix, "favicon-16x16.png")}" />'
+                f'href="{url_for(prefix, "favicon-16x16.png")}" />'
             ),
             (
                 '<link rel="apple-touch-icon" sizes="180x180" '
-                 f'href="{url_for(prefix, "apple-touch-icon.png")}" />'
+                f'href="{url_for(prefix, "apple-touch-icon.png")}" />'
             ),
         )
     )
 
     if include_manifest:
-        lines.append(
-            f'<link rel="manifest" href="{url_for(prefix, "site.webmanifest")}" />'
-        )
+        lines.append(f'<link rel="manifest" href="{url_for(prefix, "site.webmanifest")}" />')
 
     lines.append(f'<meta name="theme-color" content="{theme_colour}" />')
     return "\n".join(lines) + "\n"
@@ -105,8 +99,7 @@ def write_manifest(
     destination = output_dir / "site.webmanifest"
     if destination.exists() and not overwrite:
         raise FileExistsError(
-            f"Refusing to overwrite existing file: {destination}. "
-            "Use --overwrite to replace it."
+            f"Refusing to overwrite existing file: {destination}. Use --overwrite to replace it."
         )
     destination.write_text(content, encoding="utf-8")
     return destination
@@ -122,8 +115,7 @@ def write_html(
 
     if destination.exists() and not overwrite:
         raise FileExistsError(
-            f"Refusing to overwrite existing file: {destination}. "
-            "Use --overwrite to replace it."
+            f"Refusing to overwrite existing file: {destination}. Use --overwrite to replace it."
         )
 
     destination.write_text(content, encoding="utf-8")

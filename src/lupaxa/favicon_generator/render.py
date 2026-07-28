@@ -24,9 +24,7 @@ CAIRO_DEPENDENCY_ERROR: Final[str] = (
     "Debian/Ubuntu: apt install libcairo2"
 )
 
-HEX_COLOUR_PATTERN: Final[re.Pattern[str]] = re.compile(
-    r"^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$"
-)
+HEX_COLOUR_PATTERN: Final[re.Pattern[str]] = re.compile(r"^#[0-9a-fA-F]{6}(?:[0-9a-fA-F]{2})?$")
 
 
 def normalise_colour(value: str) -> tuple[int, int, int, int]:
@@ -50,8 +48,7 @@ def normalise_colour(value: str) -> tuple[int, int, int, int]:
 def validate_hex_colour(value: str, flag_name: str) -> str:
     if not HEX_COLOUR_PATTERN.fullmatch(value):
         raise ValueError(
-            f"{flag_name} must be a six- or eight-digit hex colour, "
-            "for example #FFFFFF."
+            f"{flag_name} must be a six- or eight-digit hex colour, for example #FFFFFF."
         )
     return value.upper()
 
@@ -104,8 +101,7 @@ def copy_favicon_svg(source: Path, output_dir: Path, overwrite: bool) -> Path:
     destination = output_dir / "favicon.svg"
     if destination.exists() and not overwrite:
         raise FileExistsError(
-            f"Refusing to overwrite existing file: {destination}. "
-            "Use --overwrite to replace it."
+            f"Refusing to overwrite existing file: {destination}. Use --overwrite to replace it."
         )
     shutil.copy2(source, destination)
     return destination
@@ -158,8 +154,7 @@ def render_icon(
 def save_png(image: Image.Image, destination: Path, overwrite: bool) -> None:
     if destination.exists() and not overwrite:
         raise FileExistsError(
-            f"Refusing to overwrite existing file: {destination}. "
-            "Use --overwrite to replace it."
+            f"Refusing to overwrite existing file: {destination}. Use --overwrite to replace it."
         )
 
     image.save(destination, format="PNG", optimize=True)
@@ -216,8 +211,7 @@ def generate_ico(
 
     if destination.exists() and not overwrite:
         raise FileExistsError(
-            f"Refusing to overwrite existing file: {destination}. "
-            "Use --overwrite to replace it."
+            f"Refusing to overwrite existing file: {destination}. Use --overwrite to replace it."
         )
 
     largest_width, largest_height = max(ICO_SIZES)
