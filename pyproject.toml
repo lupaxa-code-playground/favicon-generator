@@ -105,7 +105,7 @@ replace = 'current_version = "{new_version}"'
 use_regex = true
 
 [tool.ruff]
-line-length = 200
+line-length = 100
 target-version = "py310"
 
 [tool.ruff.lint]
@@ -137,3 +137,4 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 addopts = "-ra -q --disable-warnings"
 testpaths = ["tests"]
+pythonpath = ["src"]

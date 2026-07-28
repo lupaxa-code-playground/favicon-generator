@@ -6,7 +6,7 @@ import io
 import re
 import shutil
 from pathlib import Path
-from typing import Final
+from typing import Final, cast
 
 from PIL import Image, ImageColor, ImageOps, UnidentifiedImageError
 
@@ -34,7 +34,10 @@ def normalise_colour(value: str) -> tuple[int, int, int, int]:
         return (0, 0, 0, 0)
 
     try:
-        rgb_or_rgba = ImageColor.getcolor(value, "RGBA")
+        rgb_or_rgba = cast(
+            tuple[int, int, int, int],
+            ImageColor.getcolor(value, "RGBA"),
+        )
     except ValueError as exc:
         raise ValueError(
             f"Invalid colour {value!r}. Use 'transparent', a CSS colour name, "
@@ -75,7 +78,8 @@ def load_svg_as_rgba(path: Path) -> Image.Image:
 
     with Image.open(io.BytesIO(png_bytes)) as image:
         image.load()
-        return image.convert("RGBA")
+        converted: Image.Image = image.convert("RGBA")
+        return converted
 
 
 def prepare_source(path: Path) -> tuple[Image.Image, bool]:
