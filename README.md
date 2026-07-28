@@ -18,6 +18,8 @@ python -m pip install -e .
 python -m pip install -r requirements.txt
 ```
 
+SVG input also requires the system Cairo library (`brew install cairo` on macOS or `apt install libcairo2` on Debian/Ubuntu).
+
 ## Use
 
 ```bash
@@ -41,6 +43,7 @@ favicon-generator logo.svg \
 ```
 
 For Apple touch icons, prefer a non-transparent `--background` so iOS does not composite onto an unexpected fill.
+Maskable icons use an opaque white fill when `--background` is transparent.
 
 ### Useful flags
 

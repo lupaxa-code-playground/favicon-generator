@@ -27,6 +27,11 @@ from typing import Final
 from PIL import Image, ImageColor, ImageOps, UnidentifiedImageError
 
 SVG_RASTER_SIZE: Final[int] = 1024
+CAIRO_DEPENDENCY_ERROR: Final[str] = (
+    "SVG input requires cairosvg and the native Cairo library. Install with: "
+    "python -m pip install cairosvg; macOS: brew install cairo; "
+    "Debian/Ubuntu: apt install libcairo2"
+)
 
 
 @dataclass(frozen=True)
@@ -138,7 +143,8 @@ def parse_arguments() -> argparse.Namespace:
         "--prefix",
         default="",
         help=(
-            "Optional URL prefix used in generated HTML, for example "
+            "Optional URL prefix used in generated HTML and the webmanifest, "
+            "for example "
             "'assets/favicons/' or '/favicons/'."
         ),
     )
@@ -192,18 +198,17 @@ def validate_hex_colour(value: str, flag_name: str) -> str:
 def load_svg_as_rgba(path: Path) -> Image.Image:
     try:
         import cairosvg
-    except ImportError as exc:
-        raise ValueError(
-            "SVG input requires cairosvg. Install with: "
-            "python -m pip install cairosvg"
-        ) from exc
+    except (ImportError, OSError) as exc:
+        raise ValueError(CAIRO_DEPENDENCY_ERROR) from exc
 
     try:
         png_bytes = cairosvg.svg2png(
-            url=path.as_uri(),
+            url=path.resolve().as_uri(),
             output_width=SVG_RASTER_SIZE,
             output_height=SVG_RASTER_SIZE,
         )
+    except OSError as exc:
+        raise ValueError(CAIRO_DEPENDENCY_ERROR) from exc
     except Exception as exc:  # cairosvg raises various errors per SVG
         raise ValueError(f"Failed to render SVG: {path}: {exc}") from exc
 
@@ -328,7 +333,7 @@ def generate_png_icons(
         width=MASKABLE_ICON.width,
         height=MASKABLE_ICON.height,
         fit=fit,
-        background=background,
+        background=(255, 255, 255, 255) if background[3] == 0 else background,
         padding=maskable_padding,
     )
     save_png(maskable, maskable_dest, overwrite)
@@ -385,23 +390,29 @@ def build_html(
     if include_svg:
         lines.append(
             f'<link rel="icon" href="{url_for(prefix, "favicon.svg")}" '
-            'type="image/svg+xml" />'
+            + 'type="image/svg+xml" />'
         )
 
     if include_ico:
         lines.append(
             f'<link rel="icon" href="{url_for(prefix, "favicon.ico")}" '
-            'sizes="48x48" />'
+            + 'sizes="48x48" />'
         )
 
     lines.extend(
         (
-            '<link rel="icon" type="image/png" sizes="32x32" '
-            f'href="{url_for(prefix, "favicon-32x32.png")}" />',
-            '<link rel="icon" type="image/png" sizes="16x16" '
-            f'href="{url_for(prefix, "favicon-16x16.png")}" />',
-            '<link rel="apple-touch-icon" sizes="180x180" '
-            f'href="{url_for(prefix, "apple-touch-icon.png")}" />',
+            (
+                '<link rel="icon" type="image/png" sizes="32x32" '
+                + f'href="{url_for(prefix, "favicon-32x32.png")}" />'
+            ),
+            (
+                '<link rel="icon" type="image/png" sizes="16x16" '
+                + f'href="{url_for(prefix, "favicon-16x16.png")}" />'
+            ),
+            (
+                '<link rel="apple-touch-icon" sizes="180x180" '
+                + f'href="{url_for(prefix, "apple-touch-icon.png")}" />'
+            ),
         )
     )
 
