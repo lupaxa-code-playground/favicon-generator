@@ -122,7 +122,7 @@ def test_load_svg_import_error(
 ) -> None:
     monkeypatch.setitem(sys.modules, "cairosvg", None)
 
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError, match="cairosvg") as excinfo:
         load_svg_as_rgba(svg_source)
 
     assert str(excinfo.value) == CAIRO_DEPENDENCY_ERROR
@@ -148,7 +148,7 @@ def test_load_svg_oserror_on_svg2png(
     fake_mod.svg2png = MagicMock(side_effect=OSError("libcairo missing"))
     monkeypatch.setitem(sys.modules, "cairosvg", fake_mod)
 
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError, match="cairosvg") as excinfo:
         load_svg_as_rgba(svg_source)
 
     assert str(excinfo.value) == CAIRO_DEPENDENCY_ERROR
