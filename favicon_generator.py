@@ -63,14 +63,14 @@ HEX_COLOUR_PATTERN: Final[re.Pattern[str]] = re.compile(
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Generate Apple touch icons, PNG favicons, Windows tiles, "
-            "favicon.ico, and an HTML snippet from one source image."
+            "Generate modern favicons (PNG, ICO, Apple touch, PWA icons), "
+            "site.webmanifest, and an HTML snippet from one source image."
         )
     )
     parser.add_argument(
         "source",
         type=Path,
-        help="Source image, ideally a square PNG or SVG rendered to PNG.",
+        help="Source image: PNG, JPEG, WebP, or SVG.",
     )
     parser.add_argument(
         "-o",
@@ -98,11 +98,6 @@ def parse_arguments() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
-        "--tile-colour",
-        default="#FFFFFF",
-        help="Value used for msapplication-TileColor. Default: #FFFFFF",
-    )
-    parser.add_argument(
         "--padding",
         type=float,
         default=0.0,
@@ -112,17 +107,39 @@ def parse_arguments() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--theme-colour",
+        default="#FFFFFF",
+        help="theme-color / manifest theme_color. Default: #FFFFFF",
+    )
+    parser.add_argument(
+        "--background-colour",
+        default=None,
+        help=(
+            "Manifest background_color. Default: same as --theme-colour."
+        ),
+    )
+    parser.add_argument(
+        "--name",
+        default=None,
+        help="App name for the web manifest. Default: source file stem or 'App'.",
+    )
+    parser.add_argument(
+        "--short-name",
+        default=None,
+        help="Manifest short_name. Default: same as --name.",
+    )
+    parser.add_argument(
+        "--no-manifest",
+        action="store_true",
+        help="Do not generate site.webmanifest.",
+    )
+    parser.add_argument(
         "--prefix",
         default="",
         help=(
             "Optional URL prefix used in generated HTML, for example "
             "'assets/favicons/' or '/favicons/'."
         ),
-    )
-    parser.add_argument(
-        "--application-name",
-        default="&nbsp;",
-        help="Value for application-name in the generated HTML. Default: &nbsp;",
     )
     parser.add_argument(
         "--html-file",
@@ -162,10 +179,10 @@ def normalise_colour(value: str) -> tuple[int, int, int, int]:
     return rgb_or_rgba
 
 
-def validate_tile_colour(value: str) -> str:
+def validate_hex_colour(value: str, flag_name: str) -> str:
     if not HEX_COLOUR_PATTERN.fullmatch(value):
         raise ValueError(
-            "--tile-colour must be a six- or eight-digit hex colour, "
+            f"{flag_name} must be a six- or eight-digit hex colour, "
             "for example #FFFFFF."
         )
     return value.upper()
@@ -384,7 +401,9 @@ def main() -> int:
             raise ValueError("--padding must be between 0.0 and 0.45.")
 
         background = normalise_colour(args.background)
-        tile_colour = validate_tile_colour(args.tile_colour)
+        validate_hex_colour(args.theme_colour, "--theme-colour")
+        if args.background_colour is not None:
+            validate_hex_colour(args.background_colour, "--background-colour")
         source, _source_is_svg = prepare_source(args.source)
 
         args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -410,28 +429,9 @@ def main() -> int:
                 )
             )
 
+        # HTML/manifest wiring rewritten in Task 4
         if not args.no_html:
-            html = build_html(
-                prefix=args.prefix,
-                application_name=args.application_name,
-                tile_colour=tile_colour,
-            )
-
-            if args.no_ico:
-                html = "\n".join(
-                    line
-                    for line in html.splitlines()
-                    if 'rel="shortcut icon"' not in line
-                ) + "\n"
-
-            generated.append(
-                write_html(
-                    output_dir=args.output_dir,
-                    filename=args.html_file,
-                    content=html,
-                    overwrite=args.overwrite,
-                )
-            )
+            raise NotImplementedError("HTML generation rewritten in Task 4")
 
         print(f"Generated {len(generated)} files in {args.output_dir.resolve()}:")
         for path in generated:
