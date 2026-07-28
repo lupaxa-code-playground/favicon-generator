@@ -91,8 +91,11 @@ def prepare_source(path: Path) -> tuple[Image.Image, bool]:
     try:
         with Image.open(path) as image:
             image.load()
-            image = ImageOps.exif_transpose(image)
-            return image.convert("RGBA"), False
+            # ImageOps.exif_transpose returns Image.Image; do not reassign
+            # the ImageFile context variable (mypy assignment error).
+            oriented: Image.Image = ImageOps.exif_transpose(image) or image
+            converted: Image.Image = oriented.convert("RGBA")
+            return converted, False
     except UnidentifiedImageError as exc:
         raise ValueError(f"Unsupported or invalid image file: {path}") from exc
 
