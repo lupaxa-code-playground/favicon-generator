@@ -22,7 +22,8 @@
       {% include "partials/logo.html" %}
     </a>
 
-    <!-- Button to open navigation drawer -->
+    <!-- Button to open navigation drawer (hidden when primary sidebar is off) -->
+    {% if not config.extra.hide_primary_sidebar %}
     <label
       class="md-header__button md-icon lupaxa-header__drawer-button"
       for="__drawer"
@@ -31,6 +32,7 @@
       {% set icon = config.theme.icon.menu or "material/menu" %}
       {% include ".icons/" ~ icon ~ ".svg" %}
     </label>
+    {% endif %}
 
     <!-- Top-level desktop navigation -->
     <nav class="lupaxa-header__nav" aria-label="Primary navigation">
@@ -61,6 +63,13 @@
     <!-- Material's native palette preference handling -->
     {% if not config.theme.palette is mapping %}
       {% include "partials/javascripts/palette.html" %}
+    {% endif %}
+
+    <!-- Repository link -->
+    {% if config.repo_url %}
+      <div class="md-header__source">
+        {% include "partials/source.html" %}
+      </div>
     {% endif %}
 
     <!-- Site language selector -->

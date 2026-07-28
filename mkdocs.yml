@@ -16,6 +16,11 @@ repo_url: https://github.com/lupaxa-code-playground/favicon-generator
 
 extra:
   generator: false
+  # Hide left site nav (header already lists pages); keep on-this-page TOC.
+  hide_primary_sidebar: false
+  # Optional short label for the header GitHub link.
+  # If omitted, uses the repo segment of repo_name (org/repo → repo).
+  # repo_display_name: Favicon Generator
   social_image: assets/images/social-card.png
   social_image_width: 1200
   social_image_height: 630
@@ -48,7 +53,6 @@ theme:
     - navigation.instant
     - navigation.instant.progress
     - navigation.top
-    - navigation.sections
     - toc.follow
 
   palette:

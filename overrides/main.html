@@ -1,7 +1,46 @@
 {% extends "base.html" %}
 
+{# Optional: hide left site navigation while keeping the TOC sidebar.
+   Controlled by mkdocs.yml → extra.hide_primary_sidebar #}
+{% block site_nav %}
+  {% set features = config.theme.features or [] %}
+  {% if not config.extra.hide_primary_sidebar %}
+    {% if nav %}
+      {% if page.meta and page.meta.hide %}
+        {% set hidden = "hidden" if "navigation" in page.meta.hide %}
+      {% endif %}
+      <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" {{ hidden }}>
+        <div class="md-sidebar__scrollwrap">
+          <div class="md-sidebar__inner">
+            {% include "partials/nav.html" %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+  {% if "toc.integrate" not in features %}
+    {% if page.meta and page.meta.hide %}
+      {% set hidden = "hidden" if "toc" in page.meta.hide %}
+    {% endif %}
+    <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" {{ hidden }}>
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner">
+          {% include "partials/toc.html" %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block extrahead %}
   {{ super() }}
+
+  {% if config.extra.hide_primary_sidebar %}
+  <link
+    rel="stylesheet"
+    href="{{ 'assets/stylesheets/hide-primary-sidebar.css' | url }}"
+  >
+  {% endif %}
 
   {# -------------------------------------------------------------------------
      Page title

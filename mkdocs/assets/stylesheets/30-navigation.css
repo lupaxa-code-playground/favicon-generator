@@ -3,10 +3,6 @@
  * Custom Header Navigation
  * ============================================================================= */
 
-.md-header__source {
-  display: none !important;
-}
-
 .md-header {
   position: sticky;
   top: 0;
@@ -149,4 +145,35 @@
 
 .lupaxa-header__inner > .md-header__option .md-header__button {
   margin: 0;
+}
+
+/* Repository link (top right) */
+
+.lupaxa-header__inner > .md-header__source {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  margin-left: auto;
+  padding-right: 0.25rem;
+  pointer-events: auto;
+}
+
+.lupaxa-header__inner > .md-header__option + .md-header__source {
+  margin-left: 0.5rem;
+}
+
+.md-header__source .md-source {
+  color: rgb(255 255 255 / 85%);
+  text-decoration: none;
+}
+
+.md-header__source .md-source:hover,
+.md-header__source .md-source:focus-visible {
+  color: var(--lupaxa-white);
+}
+
+.md-header__source .md-source__repository {
+  max-width: 14rem;
 }
