@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "favicon-generator"
+version = "0.1.0"
+description = "Generate a modern favicon set from a single source image."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "Pillow>=12.0,<13.0",
+  "cairosvg",
+]
+
+[project.scripts]
+favicon-generator = "favicon_generator:main"
+
+[tool.setuptools]
+py-modules = ["favicon_generator"]
