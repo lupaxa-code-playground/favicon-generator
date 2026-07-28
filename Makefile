@@ -15,6 +15,8 @@
 #   make check             # run lint + type + test
 #   make check-all         # run lint + type + test-cov + audit
 #   make audit             # run pip-audit in an isolated venv
+#   make docs-build        # build static MkDocs documentation
+#   make docs-serve        # run mkdocs live-reload server
 #   make bump-*            # bump version via bump-my-version (dev/RC/final helpers)
 #   make build             # build wheel + sdist via hatch
 #   make release           # publish via hatch (PyPI config required)
@@ -27,6 +29,7 @@ PROJECT_NAME := lupaxa-favicon-generator
 PYTHON ?= python3
 PIP    ?= $(PYTHON) -m pip
 BUMP   ?= bump-my-version
+MKDOCS ?= mkdocs
 
 SRC_DIR  := src
 TEST_DIR := tests
@@ -53,6 +56,8 @@ PROJECT_VERSION := $(shell sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | 
 	check-diff-all \
 	check-style \
 	clean \
+	docs-build \
+	docs-serve \
 	format \
 	format-diff \
 	help \
@@ -91,6 +96,9 @@ help:
 	@echo "  check-all           Run lint, type, test, coverage, and audit"
 	@echo
 	@echo "  audit               Run pip-audit in a temporary venv"
+	@echo
+	@echo "  docs-build          Build static MkDocs documentation"
+	@echo "  docs-serve          Serve MkDocs documentation (live reload)"
 	@echo
 	@echo "  bump-patch          Bump patch (X.Y.Z -> X.Y.(Z+1), drop any suffix)"
 	@echo "  bump-minor          Bump minor (X.Y.Z -> X.(Y+1).0, drop suffix)"
@@ -168,6 +176,16 @@ audit:
 	$(AUDIT_PYTHON) -m pip_audit
 	@echo "==> Removing audit venv"
 	rm -rf $(AUDIT_VENV_DIR)
+
+# ---------------------------------------------------------------------------
+# Documentation (MkDocs)
+# ---------------------------------------------------------------------------
+
+docs-build:
+	$(MKDOCS) build
+
+docs-serve:
+	$(MKDOCS) serve
 
 # ---------------------------------------------------------------------------
 # Versioning & Packaging
@@ -354,4 +372,5 @@ clean:
 		*.egg-info \
 		.pytest_cache \
 		.mypy_cache \
-		.ruff_cache
+		.ruff_cache \
+		site

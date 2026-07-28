@@ -78,3 +78,12 @@ tests run when marked and skip if native Cairo is unavailable:
 ```bash
 pytest -m cairo
 ```
+
+## Documentation
+
+```bash
+python -m pip install -r requirements.txt
+make docs-serve
+```
+
+Strict build: `make docs-build` (or `python -m mkdocs build --strict`).
