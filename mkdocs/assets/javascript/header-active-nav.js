@@ -10,7 +10,8 @@
     window.LupaxaPageLifecycle;
 
   const normalisePath = (value) => {
-    const url = new URL(value, window.location.origin);
+    // Resolve relative hrefs (./, ..) against the current page, not origin.
+    const url = new URL(value, window.location.href);
 
     const path = url.pathname
       .replace(/\/index\.html$/, "/")
@@ -35,11 +36,10 @@
 
         const linkPath = normalisePath(link.href);
 
-        const isActive =
-          linkPath === "/"
-            ? currentPath === "/"
-            : currentPath === linkPath ||
-              currentPath.startsWith(`${linkPath}/`);
+        // Flat top-level header items: exact match only. Prefix matching
+        // makes the Home/site-root item active on every nested page
+        // (e.g. /favicon-generator vs /favicon-generator/usage/).
+        const isActive = currentPath === linkPath;
 
         item.classList.toggle(
           "lupaxa-header__nav-item--active",

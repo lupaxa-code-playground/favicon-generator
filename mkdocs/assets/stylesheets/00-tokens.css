@@ -59,9 +59,6 @@
 
 [data-md-color-scheme="default"],
 [data-md-color-scheme="slate"] {
-  --md-primary-fg-color: var(--lupaxa-dark-blue);
-  --md-primary-fg-color--light: var(--lupaxa-blue);
-  --md-primary-fg-color--dark: var(--lupaxa-dark-blue);
   --md-primary-bg-color: var(--lupaxa-white);
   --md-primary-bg-color--light: rgb(255 255 255 / 70%);
   --md-accent-fg-color: var(--lupaxa-light-blue);
@@ -70,4 +67,17 @@
 
 [data-md-color-scheme="default"] {
   --md-default-bg-color: var(--lupaxa-white);
+  /* Active nav / links use --md-typeset-a-color → primary */
+  --md-primary-fg-color: var(--lupaxa-dark-blue);
+  --md-primary-fg-color--light: var(--lupaxa-blue);
+  --md-primary-fg-color--dark: var(--lupaxa-dark-blue);
+  --md-typeset-a-color: var(--lupaxa-light-blue);
+}
+
+[data-md-color-scheme="slate"] {
+  /* Dark mode: never use lupaxa-dark-blue for active/link text */
+  --md-primary-fg-color: var(--lupaxa-light-blue);
+  --md-primary-fg-color--light: var(--lupaxa-light-blue);
+  --md-primary-fg-color--dark: var(--lupaxa-blue);
+  --md-typeset-a-color: var(--lupaxa-light-blue);
 }

@@ -1,4 +1,4 @@
-name: CodeQL Analysis
+name: Code Analysis
 
 on:
   push:
@@ -26,7 +26,7 @@ permissions:
 
 jobs:
   codeql:
-    uses: the-lupaxa-project/workflows/.github/workflows/reusable-codeql.yml@master
+    uses: the-lupaxa-project/workflows/.github/workflows/reusable-code-analysis.yml@master
     with:
       languages: "python"
 
@@ -36,7 +36,7 @@ jobs:
       - codeql
     if: always()
     # 🔴 IMPORTANT: this is a *job-level* uses, not under steps:
-    uses: the-lupaxa-project/workflows/.github/workflows/reusable-check-jobs-status.yml@master
+    uses: the-lupaxa-project/workflows/.github/workflows/reusable-workflow-summary.yml@master
 
   slack-workflow-status:
     name: Slack Workflow Status
@@ -44,7 +44,7 @@ jobs:
       - status-check
     if: always()
 
-    uses: the-lupaxa-project/workflows/.github/workflows/reusable-slack-workflow-status.yml@master
+    uses: the-lupaxa-project/workflows/.github/workflows/reusable-workflow-notifier.yml@master
     with:
       notify_on_results: "failure,timed_out"
       ignore_jobs: "Check Jobs Status"

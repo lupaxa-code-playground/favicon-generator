@@ -19,7 +19,7 @@ permissions:
 jobs:
   python-ci:
     name: Lint & Test
-    uses: the-lupaxa-project/workflows/.github/workflows/reusable-python-make-ci.yml@master
+    uses: the-lupaxa-project/workflows/.github/workflows/reusable-python-makefile-ci.yml@master
     secrets: inherit
 
   status-check:
@@ -28,7 +28,7 @@ jobs:
       - python-ci
     if: always()
     # 🔴 IMPORTANT: this is a *job-level* uses, not under steps:
-    uses: the-lupaxa-project/workflows/.github/workflows/reusable-check-jobs-status.yml@master
+    uses: the-lupaxa-project/workflows/.github/workflows/reusable-workflow-summary.yml@master
 
   slack-workflow-status:
     name: Slack Workflow Status
@@ -36,7 +36,7 @@ jobs:
       - status-check
     if: always()
 
-    uses: the-lupaxa-project/workflows/.github/workflows/reusable-slack-workflow-status.yml@master
+    uses: the-lupaxa-project/workflows/.github/workflows/reusable-workflow-notifier.yml@master
     with:
       notify_on_results: "failure,timed_out"
       ignore_jobs: "Check Jobs Status"
