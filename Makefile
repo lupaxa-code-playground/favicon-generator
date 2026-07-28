@@ -1,0 +1,357 @@
+# Makefile for lupaxa-favicon-generator
+#
+# Common workflows:
+#   make install-dev       # editable install with dev extras
+#   make install-test      # editable install with test extras
+#   make lint              # run Ruff lint + Ruff format --check
+#   make check-style       # run lint + mypy (style & type)
+#   make check-diff        # show Ruff lint diffs (no writes)
+#   make check-diff-all    # show Ruff lint + format diffs
+#   make format            # auto-format with Ruff
+#   make format-diff       # show Ruff format diffs (ruff format --diff)
+#   make type              # run mypy
+#   make test              # run pytest
+#   make test-cov          # run pytest with coverage
+#   make check             # run lint + type + test
+#   make check-all         # run lint + type + test-cov + audit
+#   make audit             # run pip-audit in an isolated venv
+#   make bump-*            # bump version via bump-my-version (dev/RC/final helpers)
+#   make build             # build wheel + sdist via hatch
+#   make release           # publish via hatch (PyPI config required)
+#   make clean             # remove build / cache artefacts
+#   make version           # show current project version
+#   make show-version-flow # show version stage + suggested next commands
+
+PROJECT_NAME := lupaxa-favicon-generator
+
+PYTHON ?= python3
+PIP    ?= $(PYTHON) -m pip
+BUMP   ?= bump-my-version
+
+SRC_DIR  := src
+TEST_DIR := tests
+
+AUDIT_VENV_DIR := .audit-env
+AUDIT_PYTHON   := $(AUDIT_VENV_DIR)/bin/python
+
+# Extract the current version from pyproject.toml ([project].version)
+PROJECT_VERSION := $(shell sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -n1)
+
+.PHONY: \
+	audit \
+	build \
+	bump-major \
+	bump-minor \
+	bump-patch \
+	bump-dev \
+	bump-rc \
+	bump-rc-patch \
+	bump-final \
+	check \
+	check-all \
+	check-diff \
+	check-diff-all \
+	check-style \
+	clean \
+	format \
+	format-diff \
+	help \
+	install-dev \
+	install-test \
+	lint \
+	release \
+	show-version-flow \
+	test \
+	test-cov \
+	type \
+	version
+
+# ---------------------------------------------------------------------------
+# Help
+# ---------------------------------------------------------------------------
+
+help:
+	@echo "$(PROJECT_NAME) Makefile"
+	@echo
+	@echo "Targets:"
+	@echo "  install-dev         Editable install with dev extras (.[dev])"
+	@echo "  install-test        Editable install with test extras (.[test])"
+	@echo
+	@echo "  lint                Run Ruff linting + Ruff format --check"
+	@echo "  check-style         Run lint + mypy (style & type checks only)"
+	@echo "  check-diff          Show Ruff lint diffs (ruff check --diff)"
+	@echo "  check-diff-all      Show Ruff lint + format diffs"
+	@echo "  format              Run Ruff formatter (auto-format)"
+	@echo "  format-diff         Show Ruff format diffs (ruff format --diff)"
+	@echo "  type                Run mypy type checking"
+	@echo
+	@echo "  test                Run pytest"
+	@echo "  test-cov            Run pytest with coverage"
+	@echo "  check               Run lint, type, and test"
+	@echo "  check-all           Run lint, type, test, coverage, and audit"
+	@echo
+	@echo "  audit               Run pip-audit in a temporary venv"
+	@echo
+	@echo "  bump-patch          Bump patch (X.Y.Z -> X.Y.(Z+1), drop any suffix)"
+	@echo "  bump-minor          Bump minor (X.Y.Z -> X.(Y+1).0, drop suffix)"
+	@echo "  bump-major          Bump major (X.Y.Z -> (X+1).0.0, drop suffix)"
+	@echo "  bump-dev            Patch bump + -dev1, or devN -> dev(N+1)"
+	@echo "  bump-rc             Patch bump + -rc1, or devN -> rc1, or rcN -> rc(N+1)"
+	@echo "  bump-rc-patch       Start next patch directly as rc1 (skips dev)"
+	@echo "  bump-final          Drop -devN / -rcN suffix (final release)"
+	@echo
+	@echo "  version             Show current project version"
+	@echo "  show-version-flow   Show stage (dev/rc/final) + suggested next steps"
+	@echo "  build               Build distributions via hatch"
+	@echo "  release             Publish distributions via hatch publish"
+	@echo "  clean               Remove build, cache artefacts, and audit venv"
+
+# ---------------------------------------------------------------------------
+# Installation
+# ---------------------------------------------------------------------------
+
+install-dev:
+	$(PIP) install -e ".[dev]"
+
+install-test:
+	$(PIP) install -e ".[test]"
+
+# ---------------------------------------------------------------------------
+# Linting / Style / Types
+# ---------------------------------------------------------------------------
+
+lint:
+	ruff check $(SRC_DIR) $(TEST_DIR)
+	ruff format --check $(SRC_DIR) $(TEST_DIR)
+
+check-style: lint type
+
+check-diff:
+	ruff check --diff $(SRC_DIR) $(TEST_DIR)
+
+check-diff-all: check-diff format-diff
+
+type:
+	mypy $(SRC_DIR)
+
+format:
+	ruff format $(SRC_DIR) $(TEST_DIR)
+
+format-diff:
+	ruff format --diff $(SRC_DIR) $(TEST_DIR)
+
+# ---------------------------------------------------------------------------
+# Testing
+# ---------------------------------------------------------------------------
+
+test:
+	pytest -v
+
+test-cov:
+	pytest --cov=lupaxa.favicon_generator --cov-report=term-missing
+
+check: lint type test
+
+check-all: lint type test-cov audit
+
+# ---------------------------------------------------------------------------
+# Security / Dependency Audit
+# ---------------------------------------------------------------------------
+
+audit:
+	@echo "==> Creating temporary audit venv: $(AUDIT_VENV_DIR)"
+	rm -rf $(AUDIT_VENV_DIR)
+	$(PYTHON) -m venv $(AUDIT_VENV_DIR)
+	$(AUDIT_PYTHON) -m pip install --upgrade pip
+	$(AUDIT_PYTHON) -m pip install -e ".[dev]"
+	@echo "==> Running pip-audit inside $(AUDIT_VENV_DIR)"
+	$(AUDIT_PYTHON) -m pip_audit
+	@echo "==> Removing audit venv"
+	rm -rf $(AUDIT_VENV_DIR)
+
+# ---------------------------------------------------------------------------
+# Versioning & Packaging
+# ---------------------------------------------------------------------------
+# Uses bump-my-version with [tool.bumpversion] in pyproject.toml
+# We treat the whole version as a single "version" part and compute new
+# versions in shell, then call:
+#   bump-my-version bump version --new-version "…"
+
+# Helpers: parse X.Y.Z into major/minor/patch in shell
+# (done inline in each recipe for clarity)
+
+bump-patch:
+	@current="$(PROJECT_VERSION)"; \
+	base="$${current%%-*}"; \
+	major="$${base%%.*}"; \
+	minor_patch="$${base#*.}"; \
+	minor="$${minor_patch%%.*}"; \
+	patch="$${minor_patch##*.}"; \
+	new_patch=$$((patch + 1)); \
+	new_version="$$major.$$minor.$$new_patch"; \
+	echo "Bump patch: $$current -> $$new_version"; \
+	$(BUMP) bump version --new-version "$$new_version"
+
+bump-minor:
+	@current="$(PROJECT_VERSION)"; \
+	base="$${current%%-*}"; \
+	major="$${base%%.*}"; \
+	minor_patch="$${base#*.}"; \
+	minor="$${minor_patch%%.*}"; \
+	new_minor=$$((minor + 1)); \
+	new_version="$$major.$$new_minor.0"; \
+	echo "Bump minor: $$current -> $$new_version"; \
+	$(BUMP) bump version --new-version "$$new_version"
+
+bump-major:
+	@current="$(PROJECT_VERSION)"; \
+	base="$${current%%-*}"; \
+	major="$${base%%.*}"; \
+	new_major=$$((major + 1)); \
+	new_version="$$new_major.0.0"; \
+	echo "Bump major: $$current -> $$new_version"; \
+	$(BUMP) bump version --new-version "$$new_version"
+
+# bump-dev logic:
+#   - If X.Y.Z        -> X.Y.(Z+1)-dev1
+#   - If X.Y.Z-devN   -> X.Y.Z-dev(N+1)
+#   - If X.Y.Z-rcN    -> ERROR (use bump-final / bump-rc instead)
+
+bump-dev:
+	@current="$(PROJECT_VERSION)"; \
+	case "$$current" in \
+		*-rc[0-9]*) \
+			echo "ERROR: bump-dev must not be called on RC versions ($$current). Use bump-rc or bump-final." >&2; \
+			exit 1 ;; \
+		*-dev[0-9]*) \
+			base="$${current%-dev*}"; \
+			n="$${current##*-dev}"; \
+			new_n=$$((n + 1)); \
+			new_version="$$base-dev$$new_n"; \
+			echo "Bump dev: $$current -> $$new_version"; \
+			$(BUMP) bump version --new-version "$$new_version";; \
+		*) \
+			base="$${current%%-*}"; \
+			major="$${base%%.*}"; \
+			minor_patch="$${base#*.}"; \
+			minor="$${minor_patch%%.*}"; \
+			patch="$${minor_patch##*.}"; \
+			new_patch=$$((patch + 1)); \
+			new_base="$$major.$$minor.$$new_patch"; \
+			new_version="$$new_base-dev1"; \
+			echo "Bump dev from final: $$current -> $$new_version"; \
+			$(BUMP) bump version --new-version "$$new_version";; \
+	esac
+
+# bump-rc logic:
+#   - If X.Y.Z        -> X.Y.(Z+1)-rc1
+#   - If X.Y.Z-devN   -> X.Y.Z-rc1
+#   - If X.Y.Z-rcN    -> X.Y.Z-rc(N+1)
+
+bump-rc:
+	@current="$(PROJECT_VERSION)"; \
+	case "$$current" in \
+		*-dev[0-9]*) \
+			base="$${current%-dev*}"; \
+			new_version="$$base-rc1"; \
+			echo "Promote dev to rc1: $$current -> $$new_version"; \
+			$(BUMP) bump version --new-version "$$new_version";; \
+		*-rc[0-9]*) \
+			base="$${current%-rc*}"; \
+			n="$${current##*-rc}"; \
+			new_n=$$((n + 1)); \
+			new_version="$$base-rc$$new_n"; \
+			echo "Bump RC: $$current -> $$new_version"; \
+			$(BUMP) bump version --new-version "$$new_version";; \
+		*) \
+			base="$${current%%-*}"; \
+			major="$${base%%.*}"; \
+			minor_patch="$${base#*.}"; \
+			minor="$${minor_patch%%.*}"; \
+			patch="$${minor_patch##*.}"; \
+			new_patch=$$((patch + 1)); \
+			new_base="$$major.$$minor.$$new_patch"; \
+			new_version="$$new_base-rc1"; \
+			echo "Start RC from final: $$current -> $$new_version"; \
+			$(BUMP) bump version --new-version "$$new_version";; \
+	esac
+
+# Start next patch directly as rc1, skipping dev:
+#   X.Y.Z           -> X.Y.(Z+1)-rc1
+#   X.Y.Z-devN/rcN  -> always based on the numeric part, then -rc1
+
+bump-rc-patch:
+	@current="$(PROJECT_VERSION)"; \
+	base="$${current%%-*}"; \
+	major="$${base%%.*}"; \
+	minor_patch="$${base#*.}"; \
+	minor="$${minor_patch%%.*}"; \
+	patch="$${minor_patch##*.}"; \
+	new_patch=$$((patch + 1)); \
+	new_base="$$major.$$minor.$$new_patch"; \
+	new_version="$$new_base-rc1"; \
+	echo "Start new patch RC: $$current -> $$new_version"; \
+	$(BUMP) bump version --new-version "$$new_version"
+
+# Finalize dev/RC to stable:
+#   X.Y.Z-devN  -> X.Y.Z
+#   X.Y.Z-rcN   -> X.Y.Z
+
+bump-final:
+	@current="$(PROJECT_VERSION)"; \
+	case "$$current" in \
+		*-dev[0-9]*|*-rc[0-9]*) \
+			new_version="$${current%%-*}"; \
+			echo "Finalize pre-release: $$current -> $$new_version"; \
+			$(BUMP) bump version --new-version "$$new_version";; \
+		*) \
+			echo "ERROR: bump-final expects a -devN or -rcN version (current: $$current)" >&2; \
+			exit 1;; \
+	esac
+
+build:
+	hatch build
+
+release: build
+	hatch publish
+
+# Show current version from pyproject.toml
+version:
+	@echo "$(PROJECT_NAME) version: $(PROJECT_VERSION)"
+
+# Show the current stage + suggested flow
+show-version-flow:
+	@echo "Current version: $(PROJECT_VERSION)"
+	@if echo "$(PROJECT_VERSION)" | grep -q -- "-dev"; then \
+		echo "Stage: development pre-release"; \
+		echo "Suggested next steps:"; \
+		echo "  - make bump-dev       # continue devN cycle"; \
+		echo "  - make bump-rc        # promote to first RC (X.Y.Z-rc1)"; \
+	elif echo "$(PROJECT_VERSION)" | grep -q -- "-rc"; then \
+		echo "Stage: release candidate"; \
+		echo "Suggested next steps:"; \
+		echo "  - make bump-rc        # bump to next RC if needed"; \
+		echo "  - make bump-final     # finalize as stable release"; \
+	else \
+		echo "Stage: final / stable release"; \
+		echo "Suggested next steps:"; \
+		echo "  - make bump-patch     # bump patch (X.Y.(Z+1))"; \
+		echo "  - make bump-dev       # start next patch dev cycle (X.Y.(Z+1)-dev1)"; \
+		echo "  - make bump-rc        # start next patch RC cycle (X.Y.(Z+1)-rc1)"; \
+		echo "  - make bump-minor     # bump minor (X.(Y+1).0)"; \
+		echo "  - make bump-major     # bump major ((X+1).0.0)"; \
+	fi
+
+# ---------------------------------------------------------------------------
+# Cleanup
+# ---------------------------------------------------------------------------
+
+clean:
+	rm -rf \
+		$(AUDIT_VENV_DIR) \
+		dist \
+		build \
+		*.egg-info \
+		.pytest_cache \
+		.mypy_cache \
+		.ruff_cache

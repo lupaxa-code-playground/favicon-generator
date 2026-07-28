@@ -61,6 +61,13 @@ Use `--help` for the full option list.
 ## Testing
 
 ```bash
+make install-dev
+make check
+```
+
+Or without Make:
+
+```bash
 python -m pip install -e ".[test]"
 pytest
 ```
