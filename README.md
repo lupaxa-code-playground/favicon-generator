@@ -44,11 +44,11 @@ Maskable icons use an opaque white fill when `--background` is transparent.
 
 ### Useful flags
 
-| Flag | Purpose |
-|------|---------|
-| `--fit contain\|cover\|stretch` | How the source fills each canvas |
-| `--no-ico` / `--no-html` / `--no-manifest` | Skip optional outputs |
-| `--overwrite` | Replace existing files |
+| Flag                                       | Purpose                           |
+| :----------------------------------------- | :-------------------------------- |
+| `--fit contain\|cover\|stretch`            | How the source fills each canvas. |
+| `--no-ico` / `--no-html` / `--no-manifest` | Skip optional outputs.            |
+| `--overwrite`                              | Replace existing files.           |
 
 ### What changed from the earlier playground script
 

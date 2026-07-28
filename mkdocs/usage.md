@@ -27,11 +27,11 @@ favicon-generator logo.svg \
 
 ## Fit, background, and padding
 
-| Flag | Notes |
-|------|--------|
-| `--fit contain\|cover\|stretch` | How the source fills each canvas (`contain` default) |
-| `--background` | Canvas fill: `transparent`, CSS name, or hex |
-| `--padding` | Fractional padding `0.0`–`0.45` |
+| Flag                            | Notes                                                 |
+| :------------------------------ | :---------------------------------------------------- |
+| `--fit contain\|cover\|stretch` | How the source fills each canvas (`contain` default). |
+| `--background`                  | Canvas fill: `transparent`, CSS name, or hex.         |
+| `--padding`                     | Fractional padding `0.0`–`0.45`.                      |
 
 For Apple touch icons, prefer a non-transparent `--background` so iOS does not
 composite onto an unexpected fill.
@@ -48,9 +48,9 @@ default as documented in [Reference](reference.md).
 
 ## Skipping optional outputs
 
-| Flag | Effect |
-|------|--------|
-| `--no-ico` | Skip `favicon.ico` |
-| `--no-html` | Skip the HTML snippet |
-| `--no-manifest` | Skip `site.webmanifest` |
-| `--overwrite` | Replace existing generated files |
+| Flag            | Effect                            |
+| :-------------- | :-------------------------------- |
+| `--no-ico`      | Skip `favicon.ico`.               |
+| `--no-html`     | Skip the HTML snippet.            |
+| `--no-manifest` | Skip `site.webmanifest`.          |
+| `--overwrite`   | Replace existing generated files. |
