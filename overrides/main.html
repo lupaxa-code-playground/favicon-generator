@@ -42,6 +42,15 @@
   >
   {% endif %}
 
+  {# Counter.dev analytics — only when extra.counter_dev_id is set #}
+  {% if config.extra.counter_dev_id %}
+  <script
+    src="https://cdn.counter.dev/script.js"
+    data-id="{{ config.extra.counter_dev_id | e }}"
+    data-utcoffset="{{ config.extra.counter_dev_utcoffset | d(1) | e }}"
+  ></script>
+  {% endif %}
+
   {# -------------------------------------------------------------------------
      Page title
      ------------------------------------------------------------------------- #}
