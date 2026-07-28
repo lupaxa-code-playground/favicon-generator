@@ -15,13 +15,17 @@ Dependencies:
 from __future__ import annotations
 
 import argparse
+import io
 import re
+import shutil
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
 
 from PIL import Image, ImageColor, ImageOps, UnidentifiedImageError
+
+SVG_RASTER_SIZE: Final[int] = 1024
 
 
 @dataclass(frozen=True)
@@ -167,19 +171,59 @@ def validate_tile_colour(value: str) -> str:
     return value.upper()
 
 
-def prepare_source(path: Path) -> Image.Image:
+def load_svg_as_rgba(path: Path) -> Image.Image:
+    try:
+        import cairosvg
+    except ImportError as exc:
+        raise ValueError(
+            "SVG input requires cairosvg. Install with: "
+            "python -m pip install cairosvg"
+        ) from exc
+
+    try:
+        png_bytes = cairosvg.svg2png(
+            url=path.as_uri(),
+            output_width=SVG_RASTER_SIZE,
+            output_height=SVG_RASTER_SIZE,
+        )
+    except Exception as exc:  # cairosvg raises various errors per SVG
+        raise ValueError(f"Failed to render SVG: {path}: {exc}") from exc
+
+    if not png_bytes:
+        raise ValueError(f"Failed to render SVG (empty output): {path}")
+
+    with Image.open(io.BytesIO(png_bytes)) as image:
+        image.load()
+        return image.convert("RGBA")
+
+
+def prepare_source(path: Path) -> tuple[Image.Image, bool]:
     if not path.exists():
         raise FileNotFoundError(f"Source image does not exist: {path}")
     if not path.is_file():
         raise ValueError(f"Source path is not a file: {path}")
 
+    if path.suffix.lower() == ".svg":
+        return load_svg_as_rgba(path), True
+
     try:
         with Image.open(path) as image:
             image.load()
             image = ImageOps.exif_transpose(image)
-            return image.convert("RGBA")
+            return image.convert("RGBA"), False
     except UnidentifiedImageError as exc:
         raise ValueError(f"Unsupported or invalid image file: {path}") from exc
+
+
+def copy_favicon_svg(source: Path, output_dir: Path, overwrite: bool) -> Path:
+    destination = output_dir / "favicon.svg"
+    if destination.exists() and not overwrite:
+        raise FileExistsError(
+            f"Refusing to overwrite existing file: {destination}. "
+            "Use --overwrite to replace it."
+        )
+    shutil.copy2(source, destination)
+    return destination
 
 
 def inner_dimensions(
@@ -341,7 +385,7 @@ def main() -> int:
 
         background = normalise_colour(args.background)
         tile_colour = validate_tile_colour(args.tile_colour)
-        source = prepare_source(args.source)
+        source, _source_is_svg = prepare_source(args.source)
 
         args.output_dir.mkdir(parents=True, exist_ok=True)
 
