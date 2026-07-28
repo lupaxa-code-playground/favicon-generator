@@ -25,28 +25,28 @@ def build_html(
     if include_svg:
         lines.append(
             f'<link rel="icon" href="{url_for(prefix, "favicon.svg")}" '
-            + 'type="image/svg+xml" />'
+             'type="image/svg+xml" />'
         )
 
     if include_ico:
         lines.append(
             f'<link rel="icon" href="{url_for(prefix, "favicon.ico")}" '
-            + 'sizes="48x48" />'
+             'sizes="48x48" />'
         )
 
     lines.extend(
         (
             (
                 '<link rel="icon" type="image/png" sizes="32x32" '
-                + f'href="{url_for(prefix, "favicon-32x32.png")}" />'
+                 f'href="{url_for(prefix, "favicon-32x32.png")}" />'
             ),
             (
                 '<link rel="icon" type="image/png" sizes="16x16" '
-                + f'href="{url_for(prefix, "favicon-16x16.png")}" />'
+                 f'href="{url_for(prefix, "favicon-16x16.png")}" />'
             ),
             (
                 '<link rel="apple-touch-icon" sizes="180x180" '
-                + f'href="{url_for(prefix, "apple-touch-icon.png")}" />'
+                 f'href="{url_for(prefix, "apple-touch-icon.png")}" />'
             ),
         )
     )

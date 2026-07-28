@@ -10,7 +10,6 @@ from typing import Final
 
 from PIL import Image, ImageColor, ImageOps, UnidentifiedImageError
 
-from .exceptions import InputError, OutputError
 from .icons import (
     ICO_SIZES,
     MASKABLE_EXTRA_PADDING,

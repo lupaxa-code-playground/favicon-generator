@@ -15,7 +15,6 @@ from .render import (
     prepare_source,
     validate_hex_colour,
 )
-from .version import get_version
 
 
 def parse_arguments() -> argparse.Namespace:
