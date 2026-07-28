@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import io
+import json
 import re
 import shutil
 import sys
@@ -371,8 +372,98 @@ def url_for(prefix: str, filename: str) -> str:
     return f"{prefix.rstrip('/')}/{filename}"
 
 
-def build_html(prefix: str, application_name: str, tile_colour: str) -> str:
-    raise NotImplementedError("rewritten in Task 4")
+def build_html(
+    *,
+    prefix: str,
+    theme_colour: str,
+    include_svg: bool,
+    include_ico: bool,
+    include_manifest: bool,
+) -> str:
+    lines: list[str] = []
+
+    if include_svg:
+        lines.append(
+            f'<link rel="icon" href="{url_for(prefix, "favicon.svg")}" '
+            'type="image/svg+xml" />'
+        )
+
+    if include_ico:
+        lines.append(
+            f'<link rel="icon" href="{url_for(prefix, "favicon.ico")}" '
+            'sizes="48x48" />'
+        )
+
+    lines.extend(
+        (
+            '<link rel="icon" type="image/png" sizes="32x32" '
+            f'href="{url_for(prefix, "favicon-32x32.png")}" />',
+            '<link rel="icon" type="image/png" sizes="16x16" '
+            f'href="{url_for(prefix, "favicon-16x16.png")}" />',
+            '<link rel="apple-touch-icon" sizes="180x180" '
+            f'href="{url_for(prefix, "apple-touch-icon.png")}" />',
+        )
+    )
+
+    if include_manifest:
+        lines.append(
+            f'<link rel="manifest" href="{url_for(prefix, "site.webmanifest")}" />'
+        )
+
+    lines.append(f'<meta name="theme-color" content="{theme_colour}" />')
+    return "\n".join(lines) + "\n"
+
+
+def build_manifest(
+    *,
+    prefix: str,
+    name: str,
+    short_name: str,
+    theme_colour: str,
+    background_colour: str,
+) -> str:
+    payload = {
+        "name": name,
+        "short_name": short_name,
+        "theme_color": theme_colour,
+        "background_color": background_colour,
+        "icons": [
+            {
+                "src": url_for(prefix, "icon-192.png"),
+                "sizes": "192x192",
+                "type": "image/png",
+                "purpose": "any",
+            },
+            {
+                "src": url_for(prefix, "icon-512.png"),
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "any",
+            },
+            {
+                "src": url_for(prefix, "icon-maskable-512.png"),
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "maskable",
+            },
+        ],
+    }
+    return json.dumps(payload, indent=2) + "\n"
+
+
+def write_manifest(
+    output_dir: Path,
+    content: str,
+    overwrite: bool,
+) -> Path:
+    destination = output_dir / "site.webmanifest"
+    if destination.exists() and not overwrite:
+        raise FileExistsError(
+            f"Refusing to overwrite existing file: {destination}. "
+            "Use --overwrite to replace it."
+        )
+    destination.write_text(content, encoding="utf-8")
+    return destination
 
 
 def write_html(
@@ -401,10 +492,20 @@ def main() -> int:
             raise ValueError("--padding must be between 0.0 and 0.45.")
 
         background = normalise_colour(args.background)
-        validate_hex_colour(args.theme_colour, "--theme-colour")
-        if args.background_colour is not None:
-            validate_hex_colour(args.background_colour, "--background-colour")
-        source, _source_is_svg = prepare_source(args.source)
+        theme_colour = validate_hex_colour(args.theme_colour, "--theme-colour")
+        background_colour_raw = (
+            args.background_colour
+            if args.background_colour is not None
+            else args.theme_colour
+        )
+        background_colour = validate_hex_colour(
+            background_colour_raw, "--background-colour"
+        )
+
+        source, source_is_svg = prepare_source(args.source)
+
+        app_name = args.name if args.name is not None else (args.source.stem or "App")
+        short_name = args.short_name if args.short_name is not None else app_name
 
         args.output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -429,9 +530,41 @@ def main() -> int:
                 )
             )
 
-        # HTML/manifest wiring rewritten in Task 4
+        if source_is_svg:
+            generated.append(
+                copy_favicon_svg(args.source, args.output_dir, args.overwrite)
+            )
+
+        if not args.no_manifest:
+            generated.append(
+                write_manifest(
+                    output_dir=args.output_dir,
+                    content=build_manifest(
+                        prefix=args.prefix,
+                        name=app_name,
+                        short_name=short_name,
+                        theme_colour=theme_colour,
+                        background_colour=background_colour,
+                    ),
+                    overwrite=args.overwrite,
+                )
+            )
+
         if not args.no_html:
-            raise NotImplementedError("HTML generation rewritten in Task 4")
+            generated.append(
+                write_html(
+                    output_dir=args.output_dir,
+                    filename=args.html_file,
+                    content=build_html(
+                        prefix=args.prefix,
+                        theme_colour=theme_colour,
+                        include_svg=source_is_svg,
+                        include_ico=not args.no_ico,
+                        include_manifest=not args.no_manifest,
+                    ),
+                    overwrite=args.overwrite,
+                )
+            )
 
         print(f"Generated {len(generated)} files in {args.output_dir.resolve()}:")
         for path in generated:
