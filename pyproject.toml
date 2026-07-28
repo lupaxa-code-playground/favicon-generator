@@ -1,9 +1,9 @@
 [build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.18"]
+build-backend = "hatchling.build"
 
 [project]
-name = "favicon-generator"
+name = "lupaxa-favicon-generator"
 version = "0.1.0"
 description = "Generate a modern favicon set from a single source image."
 readme = "README.md"
@@ -13,8 +13,20 @@ dependencies = [
   "cairosvg",
 ]
 
-[project.scripts]
-favicon-generator = "favicon_generator:main"
+[project.optional-dependencies]
+test = [
+  "pytest>=8.0",
+]
 
-[tool.setuptools]
-py-modules = ["favicon_generator"]
+[project.scripts]
+favicon-generator = "lupaxa.favicon_generator.cli:main"
+
+[tool.hatch.version]
+path = "src/lupaxa/favicon_generator/version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lupaxa"]
+
+[tool.pytest.ini_options]
+addopts = "-ra -q --disable-warnings"
+testpaths = ["tests"]

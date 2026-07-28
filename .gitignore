@@ -1,4 +1,5 @@
 favicons/
+cursor-docs/
 __pycache__/
 *.py[cod]
 .venv/
@@ -8,3 +9,6 @@ dist/
 build/
 *.egg-info/
 .DS_Store
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
