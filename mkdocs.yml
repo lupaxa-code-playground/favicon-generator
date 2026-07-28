@@ -1,0 +1,152 @@
+# =============================================================================
+# Site Information — replace these placeholders per project
+# =============================================================================
+
+site_name: Favicon Generator
+
+site_description: >-
+  Generate a modern favicon set from a single source image.
+
+site_author: The Lupaxa Project
+
+site_url: https://lupaxa-code-playground.github.io/favicon-generator/
+
+repo_name: lupaxa-code-playground/favicon-generator
+repo_url: https://github.com/lupaxa-code-playground/favicon-generator
+
+extra:
+  generator: false
+  social_image: assets/images/social-card.png
+  social_image_width: 1200
+  social_image_height: 630
+  social_logo: assets/images/logo.png
+  social_locale: en_GB
+  theme_color: "#203959"
+  twitter_card: summary_large_image
+
+# =============================================================================
+# Content
+# =============================================================================
+
+docs_dir: mkdocs
+site_dir: site
+use_directory_urls: true
+
+# =============================================================================
+# Theme
+# =============================================================================
+
+theme:
+  name: material
+  custom_dir: overrides
+  language: en
+  logo: assets/images/logo.png
+  favicon: assets/images/favicon.png
+
+  features:
+    - content.code.copy
+    - content.tooltips
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.top
+    - navigation.sections
+    - toc.follow
+
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: light-blue
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+  icon:
+    repo: fontawesome/brands/github
+
+# =============================================================================
+# Plugins
+# =============================================================================
+
+plugins:
+  - search
+
+# =============================================================================
+# Navigation
+# =============================================================================
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Usage: usage.md
+  - Reference: reference.md
+  - Examples: examples.md
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: false
+      permalink_title: Link to this section
+  - pymdownx.blocks.caption
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# =============================================================================
+# Additional Assets
+# =============================================================================
+
+extra_css:
+  - assets/stylesheets/00-tokens.css
+  - assets/stylesheets/10-base.css
+  - assets/stylesheets/20-layout.css
+  - assets/stylesheets/30-navigation.css
+  - assets/stylesheets/40-components/buttons.css
+  - assets/stylesheets/40-components/footer.css
+  - assets/stylesheets/90-responsive.css
+  - assets/stylesheets/95-print.css
+  - assets/stylesheets/99-overrides.css
+
+extra_javascript:
+  - assets/javascript/page-lifecycle.js
+  - assets/javascript/header-active-nav.js
+
+# =============================================================================
+# Copyright
+# =============================================================================
+
+copyright: >
+  <span class="footer-copyright">© 2026 <strong>The Lupaxa Project</strong>. All rights reserved.</span>
+  <span class="footer-tagline">Where exploration meets precision.</span>
+  <span class="footer-tagline">Where the untamed meets the engineered.</span>

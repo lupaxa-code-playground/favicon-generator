@@ -1,2 +1,5 @@
 Pillow>=12.0,<13.0
 cairosvg
+
+mkdocs==1.6.1
+mkdocs-material==9.7.7
