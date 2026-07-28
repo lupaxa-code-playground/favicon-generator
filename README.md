@@ -1,3 +1,11 @@
+<p align="center">
+    <a href="https://github.com/code-playground">
+        <img src="https://raw.githubusercontent.com/the-lupaxa-project/brand-assets/master/logos/organisations/code-playground/readme-logo.png" alt="Organisation Logo" />
+    </a>
+</p>
+
+<h1 align="center">Lupaxa GitHub Repository Sync</h1>
+
 # Favicon Generator
 
 Generate a modern favicon set from one source image (PNG, JPEG, WebP, or SVG):
@@ -87,3 +95,7 @@ make docs-serve
 ```
 
 Strict build: `make docs-build` (or `python -m mkdocs build --strict`).
+
+<a href="https://github.com/the-lupaxa-project">
+    <img src="https://raw.githubusercontent.com/the-lupaxa-project/brand-assets/master/logos/components/footer-for-child-orgs.svg" alt="The Lupaxa Project Footer" width="100%" />
+</a>
