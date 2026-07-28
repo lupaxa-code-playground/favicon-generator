@@ -4,9 +4,7 @@
     </a>
 </p>
 
-<h1 align="center">Lupaxa GitHub Repository Sync</h1>
-
-# Favicon Generator
+<h1 align="center">Favicon generator</h1>
 
 Generate a modern favicon set from one source image (PNG, JPEG, WebP, or SVG):
 
