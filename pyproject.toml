@@ -135,6 +135,17 @@ follow_imports = "normal"
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-addopts = "-ra -q --disable-warnings"
+addopts = "-ra -q --disable-warnings --cov=lupaxa.favicon_generator --cov-report=term-missing"
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+  "cairo: tests that require a working native Cairo library",
+]
+
+[tool.coverage.run]
+source = ["lupaxa.favicon_generator"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_empty = true
