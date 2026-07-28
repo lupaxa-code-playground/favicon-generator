@@ -13,10 +13,12 @@ Generate a modern favicon set from one source image (PNG, JPEG, WebP, or SVG):
 ## Install
 
 ```bash
-python -m pip install -e .
-# or
-python -m pip install -r requirements.txt
+python -m pip install lupaxa-favicon-generator
+# development
+python -m pip install -e ".[dev]"
 ```
+
+The PyPI package name is `lupaxa-favicon-generator`. The console command is `favicon-generator`.
 
 SVG input also requires the system Cairo library (`brew install cairo` on macOS or `apt install libcairo2` on Debian/Ubuntu).
 
@@ -24,13 +26,6 @@ SVG input also requires the system Cairo library (`brew install cairo` on macOS 
 
 ```bash
 favicon-generator logo.png
-# or
-python favicon_generator.py logo.png
-```
-
-Default output directory: `./favicons`.
-
-```bash
 favicon-generator logo.svg \
   --output-dir site/assets/favicons \
   --prefix /assets/favicons/ \
@@ -41,6 +36,8 @@ favicon-generator logo.svg \
   --background "#0A0A0A" \
   --padding 0.05
 ```
+
+Default output directory: `./favicons`.
 
 For Apple touch icons, prefer a non-transparent `--background` so iOS does not composite onto an unexpected fill.
 Maskable icons use an opaque white fill when `--background` is transparent.
