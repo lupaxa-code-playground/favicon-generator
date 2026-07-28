@@ -12,6 +12,7 @@ from PIL import Image
 from lupaxa.favicon_generator.icons import MASKABLE_ICON, PNG_ICONS
 from lupaxa.favicon_generator.render import (
     CAIRO_DEPENDENCY_ERROR,
+    copy_favicon_svg,
     generate_ico,
     generate_png_icons,
     load_svg_as_rgba,
@@ -54,6 +55,13 @@ def test_prepare_source_missing(tmp_path: Path) -> None:
 def test_prepare_source_directory(tmp_path: Path) -> None:
     with pytest.raises(ValueError, match="not a file"):
         prepare_source(tmp_path)
+
+
+def test_prepare_source_invalid_image(tmp_path: Path) -> None:
+    bad = tmp_path / "bad.png"
+    bad.write_bytes(b"not-an-image")
+    with pytest.raises(ValueError, match="Unsupported"):
+        prepare_source(bad)
 
 
 def test_render_icon_fit_modes(png_source: Path) -> None:
@@ -152,6 +160,24 @@ def test_load_svg_oserror_on_svg2png(
         load_svg_as_rgba(svg_source)
 
     assert str(excinfo.value) == CAIRO_DEPENDENCY_ERROR
+
+
+def test_load_svg_empty_png_bytes(
+    svg_source: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake_mod = types.ModuleType("cairosvg")
+    fake_mod.svg2png = MagicMock(return_value=b"")
+    monkeypatch.setitem(sys.modules, "cairosvg", fake_mod)
+
+    with pytest.raises(ValueError, match="empty output"):
+        load_svg_as_rgba(svg_source)
+
+
+def test_copy_favicon_svg(svg_source: Path, tmp_path: Path) -> None:
+    destination = copy_favicon_svg(svg_source, tmp_path, overwrite=False)
+    assert destination.name == "favicon.svg"
+    with pytest.raises(FileExistsError):
+        copy_favicon_svg(svg_source, tmp_path, overwrite=False)
 
 
 def test_generate_png_overwrite_guard(png_source: Path, tmp_path: Path) -> None:

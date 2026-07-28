@@ -57,3 +57,17 @@ Maskable icons use an opaque white fill when `--background` is transparent.
 - Added SVG input (cairosvg) and PWA manifest + maskable icon
 
 Use `--help` for the full option list.
+
+## Testing
+
+```bash
+python -m pip install -e ".[test]"
+pytest
+```
+
+Coverage for `lupaxa.favicon_generator` is reported by default. Optional Cairo SVG integration
+tests run when marked and skip if native Cairo is unavailable:
+
+```bash
+pytest -m cairo
+```
