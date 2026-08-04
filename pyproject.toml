@@ -35,9 +35,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/lupaxa-code-playground/favicon-generator"
-Repository = "https://github.com/lupaxa-code-playground/favicon-generator"
-Issues = "https://github.com/lupaxa-code-playground/favicon-generator/issues"
+Homepage = "https://github.com/lupaxa-miscellaneous-toolbox/favicon-generator"
+Repository = "https://github.com/lupaxa-miscellaneous-toolbox/favicon-generator"
+Issues = "https://github.com/lupaxa-miscellaneous-toolbox/favicon-generator/issues"
 
 [project.scripts]
 favicon-generator = "lupaxa.favicon_generator.cli:main"

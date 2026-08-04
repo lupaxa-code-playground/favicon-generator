@@ -1,6 +1,6 @@
 <p align="center">
-    <a href="https://github.com/code-playground">
-        <img src="https://raw.githubusercontent.com/the-lupaxa-project/brand-assets/master/logos/organisations/code-playground/readme-logo.png" alt="Organisation Logo" />
+    <a href="https://github.com/lupaxa-miscellaneous-toolbox">
+        <img src="https://raw.githubusercontent.com/the-lupaxa-project/brand-assets/master/logos/organisations/miscellaneous-toolbox/readme-logo.png" alt="Organisation Logo" />
     </a>
 </p>
 
