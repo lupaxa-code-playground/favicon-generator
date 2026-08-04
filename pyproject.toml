@@ -7,7 +7,7 @@ name = "lupaxa-favicon-generator"
 version = "0.1.0"
 description = "Generate a modern favicon set from a single source image."
 readme = "README-PYPI.md"
-license = { file = "LICENSE.md" }
+license = { file = "LICENSE" }
 requires-python = ">=3.10"
 
 authors = [
@@ -64,7 +64,7 @@ include = [
   "src/**",
   "README.md",
   "README-PYPI.md",
-  "LICENSE.md",
+  "LICENSE",
 ]
 
 [tool.hatch.build.targets.wheel]
