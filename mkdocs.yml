@@ -17,10 +17,17 @@ repo_url: https://github.com/lupaxa-miscellaneous-toolbox/favicon-generator
 extra:
   generator: false
   # Hide left site nav (header already lists pages); keep on-this-page TOC.
+  # Default when omitted: false (left nav visible).
   hide_primary_sidebar: false
   # Optional short label for the header GitHub link.
   # If omitted, uses the repo segment of repo_name (org/repo → repo).
   # repo_display_name: Favicon Generator
+  # Footer (rendered by overrides/partials/copyright.html; year set in-browser).
+  start_year: 2026
+  footer_name: The Lupaxa Project
+  footer_taglines:
+    - Where exploration meets precision.
+    - Where the untamed meets the engineered.
   # Counter.dev analytics (omit counter_dev_id to disable).
   counter_dev_id: ef410665-76d4-43fe-9e91-53f26ed1004b
   counter_dev_utcoffset: 0
@@ -53,9 +60,12 @@ theme:
 
   features:
     - content.code.copy
+    - content.tooltips
+    - navigation.indexes
     - navigation.instant
     - navigation.instant.progress
     - navigation.top
+    - navigation.sections
     - toc.follow
 
   palette:
@@ -95,17 +105,35 @@ nav:
   - Reference: reference.md
   - Examples: examples.md
 
-# Only extensions used by current mkdocs/*.md pages (plus toc for the sidebar).
 markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
   - tables
   - toc:
       permalink: false
       permalink_title: Link to this section
+  - pymdownx.blocks.caption
+  - pymdownx.caret
+  - pymdownx.details
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
 
 # =============================================================================
 # Additional Assets
@@ -118,6 +146,8 @@ extra_css:
   - assets/stylesheets/30-navigation.css
   - assets/stylesheets/40-components/buttons.css
   - assets/stylesheets/40-components/footer.css
+  - assets/stylesheets/40-components/hero.css
+  - assets/stylesheets/40-components/tables.css
   - assets/stylesheets/90-responsive.css
   - assets/stylesheets/95-print.css
   - assets/stylesheets/99-overrides.css
@@ -127,10 +157,5 @@ extra_javascript:
   - assets/javascript/header-active-nav.js
 
 # =============================================================================
-# Copyright
+# Copyright (rendered by overrides/partials/copyright.html; year set in-browser)
 # =============================================================================
-
-copyright: >
-  <span class="footer-copyright">© 2026 <strong>The Lupaxa Project</strong>. All rights reserved.</span>
-  <span class="footer-tagline">Where exploration meets precision.</span>
-  <span class="footer-tagline">Where the untamed meets the engineered.</span>

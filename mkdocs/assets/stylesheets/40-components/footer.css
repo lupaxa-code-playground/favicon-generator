@@ -1,5 +1,4 @@
 /* =============================================================================
- * The Lupaxa Project Portal
  * Site Footer
  * ============================================================================= */
 
@@ -10,7 +9,7 @@
 }
 
 .md-footer-meta {
-  padding: 1.5rem 1rem;
+  padding: 0.7rem 1rem;
   border-top:
     1px solid
     color-mix(
@@ -36,14 +35,14 @@
 .md-copyright__highlight {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.15rem;
   align-items: center;
 }
 
 .footer-copyright {
   color: var(--lupaxa-white);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.25;
   opacity: 0.9;
   letter-spacing: -0.02em;
 }
@@ -51,10 +50,10 @@
 .footer-tagline {
   color: var(--lupaxa-white);
   font-weight: 300;
-  line-height: 1.35;
+  line-height: 1.25;
 }
 
 .footer-copyright,
 .footer-tagline {
-  font-size: clamp(0.875rem, 0.84rem + 0.2vw, 0.95rem);
+  font-size: clamp(0.7rem, 0.68rem + 0.1vw, 0.8rem);
 }

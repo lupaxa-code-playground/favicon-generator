@@ -35,13 +35,6 @@
 {% block extrahead %}
   {{ super() }}
 
-  {% if config.extra.hide_primary_sidebar %}
-  <link
-    rel="stylesheet"
-    href="{{ 'assets/stylesheets/hide-primary-sidebar.css' | url }}"
-  >
-  {% endif %}
-
   {# Counter.dev analytics — only when extra.counter_dev_id is set #}
   {% if config.extra.counter_dev_id %}
   <script
@@ -49,6 +42,13 @@
     data-id="{{ config.extra.counter_dev_id | e }}"
     data-utcoffset="{{ config.extra.counter_dev_utcoffset | d(0) | e }}"
   ></script>
+  {% endif %}
+
+  {% if config.extra.hide_primary_sidebar %}
+  <link
+    rel="stylesheet"
+    href="{{ 'assets/stylesheets/hide-primary-sidebar.css' | url }}"
+  >
   {% endif %}
 
   {# -------------------------------------------------------------------------

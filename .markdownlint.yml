@@ -25,6 +25,13 @@ MD026:
 
 MD029: false
 
+# One space after simple markers; three for multi-line Material card items.
+MD030:
+  ul_single: 1
+  ol_single: 1
+  ul_multi: 3
+  ol_multi: 3
+
 # HTML heroes, cards, and catalogue markup.
 MD033: false
 
@@ -41,7 +48,8 @@ MD040: true
 # Pages may start with front matter / HTML heroes.
 MD041: false
 
-# Permit fenced and indented code blocks.
+# Allow fenced blocks nested under Material tabs (===) which must be indented.
+# Prefer fenced ``` / ~~~ code in docs; do not use 4-space indented code blocks.
 MD046: false
 
 MD048:
@@ -52,3 +60,7 @@ MD049:
 
 MD050:
   style: asterisk
+
+# Require pipe-aligned table columns (pad to longest cell per column).
+MD060:
+  style: aligned

@@ -30,9 +30,9 @@
 
 .md-typeset .md-button--primary:hover,
 .md-typeset .md-button--primary:focus {
-  color: var(--lupaxa-white);
-  background-color: var(--lupaxa-dark-blue);
-  border-color: var(--lupaxa-dark-blue);
+  color: var(--lupaxa-dark-blue);
+  background-color: var(--lupaxa-light-blue);
+  border-color: var(--lupaxa-light-blue);
 }
 
 .md-typeset .md-button.lupaxa-button {
