@@ -3,8 +3,7 @@
 ## Requirements
 
 - Python 3.10+
-- For SVG sources: system Cairo (`brew install cairo` on macOS, or
-  `apt install libcairo2` on Debian/Ubuntu)
+- For SVG sources: system Cairo (`brew install cairo` on macOS, or `apt install libcairo2` on Debian/Ubuntu)
 
 ## Install
 

@@ -2,6 +2,8 @@ site/
 favicons/
 cursor-docs
 .cursor/
+.superpowers/
+.makefiles/
 
 __pycache__/
 *.py[cod]

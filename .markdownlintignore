@@ -1,3 +1,10 @@
 # Generated / local-only — not part of the published site
 site/
 cursor-docs/
+.superpowers/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+**/node_modules/
